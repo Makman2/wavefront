@@ -5,7 +5,7 @@ from wavefront.mesh import Mesh
 
 _anti_comment_regex = re.compile("#.*")
 _token_regex = re.compile("o|v")
-_token_o_regex = re.compile(r"\s+([^\s]+)")
+_token_o_regex = re.compile(r" +([^\s]+)")
 _token_v_regex = re.compile(r"\s+([0-9]+\.[0-9]+)\s+([0-9]+\.[0-9]+)\s+"
                             r"([0-9]+\.[0-9]+)(?:\s+([0-9]+\.[0-9]+))?")
 
@@ -17,6 +17,17 @@ def load(string):
     :param string: The data string of the obj-file to load.
     :return:       An iterator returning `Mesh`es loaded from `string`.
     """
+    mesh = None
+    for line in string.splitlines():
+        if line.startswith("o"):
+            mesh = Mesh(name=_token_o_regex.match(line).group(1))
+
+        if mesh:
+            if line.startswith("v"):
+                pass
+            elif line.startswith("vn"):
+                pass
+
     # Remove all comment strings.
     string = _anti_comment_regex.sub("", string)
 
